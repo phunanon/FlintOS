@@ -1,0 +1,30 @@
+User binary writer
+- accepts 9-bit write point from user
+- accepts bytes from the user
+- requires 0 press between bytes, otherwise halts
+- writes bytes to write point
+Note: little-endian
+
+S_	':'	drop char
+PC		print char
+
+		Get write point
+MI		++mem
+CV	05	copy bit from user to _
+MD		--mem
+CV	01	copy byte from user to _
+ES		set eeprom point from __
+
+S_	':'	drop char
+PC		print _
+
+CV	01	:loop: copy byte from user
+EW		write _ to EEPROM
+CV	04	copy bit from user to _
+JZ	loop	jump to :loop: if _ == 0
+HT
+
+0x10,':', 0x40,
+0x0A, 0x30,0x05, 0x0B, 0x30,0x01, 0x60,
+0x10,':', 0x40,
+0x30,0x01, 0x63, 0x30,0x04, 0x03,13, 0xFF

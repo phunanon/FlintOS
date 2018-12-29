@@ -1,0 +1,58 @@
+00	J_		jump to relative _
+01	JA		jump to absolute __ address
+02	JU	x	jump to relative x address
+03	JZ	x	jump to x if _ == 0
+04	JE	xy	jump to x if _ == *y
+05	JG	xy	jump to x if _ > *y
+06	J4	xy	jump to x if ____ == *yyyy
+07	?JX	x	jump to *x
+...
+0A	MI		++mem pointer
+0B	MD		--mem pointer
+0C	MA	x	mem pointer += x
+0D	MS	x	mem pointer -= x
+...
+10	S_	x	set _ to x
+11	CP	xy	copy *x to *y
+12	V_	x	copy x to _
+13	_V	x	copy _ to x
+14	VL	xy	copy x bytes from y to _
+15	LV	xy	copy x bytes from _ to y
+...
+20	1A	x	_ + *x to _
+21	1S	x	_ - *x to _
+22	1M	x	_ * *x to _
+23	1D	x	_ / *x to _
+24	1L	x	_ % *x to _
+25	4A	x	____ + *xxxx to ____
+26	4S	x	____ - *xxxx to ____
+27	4M	x	____ * *xxxx to ____
+28	4D	x	____ / *xxxx to ____
+29	4L	x	____ % *xxxx to ____
+2A	1R	x	_ rotate *x to _
+2B	4R	x	____ rotate *xxxx to ____
+2C	1I		++_
+2D	1D		--_
+2E	4I		++____
+2F	4D		--____
+...
+30	CV	x	copy sys variable x to _
+...
+40	PC		print _ as char
+41	PX		print _ as hex
+42	PB		print _ as column
+43	CL	x	print *x chars from _
+44	XL	x	print *x hex from _
+45	BL	x	print *x columns from _
+...
+50	RP	x	read pin *x to _ as 1-bit digital
+51	WD	x	write _ to pin *x as 1-bit digital
+52	WA	x	write _ to pin *x as 8-bit analog
+...
+60	ES		eeprom pointer = __
+61	EG		__ = eeprom pointer
+62	ER		read eeprom to _
+63	EW		write _ to eeprom
+64	EL	x	read *x of eeprom to _
+...
+FF	HT		halt
