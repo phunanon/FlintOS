@@ -39,15 +39,15 @@ void Knapper::CV (uint8_t var)
   bool do2 = false, do4 = false;
   
   switch (var) {
-    case 0x00: i1 = _typ->GetUserByte();            break;
-    case 0x01: i1 = _typ->GetUserByte(_dis);        break;
-    case 0x02: i1 = _typ->GetUserNibble();          break;
-    case 0x03: i1 = _typ->GetUserNibble(_dis);      break;
-    case 0x04: i1 = _typ->GetUserBit();             break;
-    case 0x05: i1 = _typ->GetUserBit(_dis);         break;
-    case 0x10: do4 = true; i4 = (int32_t)millis();  break;
-    case 0x20: do2 = true; i2 = _entry;             break;
-    default: i1 = i2 = i4 = 0;                      break;
+    case 0x00: i1 = _typ->GetUserByte();        break;
+    case 0x01: i1 = _typ->GetUserByte(_dis);    break;
+    case 0x02: i1 = _typ->GetUserNibble();      break;
+    case 0x03: i1 = _typ->GetUserNibble(_dis);  break;
+    case 0x04: i1 = _typ->GetUserBit();         break;
+    case 0x05: i1 = _typ->GetUserBit(_dis);     break;
+    case 0x10: do4 = i4 = (int32_t)millis();    break;
+    case 0x20: do2 = i2 = _entry;               break;
+    default: i1 = i2 = i4 = 0;                  break;
   }
   
   if (do4) Set32Bit(i4);
@@ -83,7 +83,6 @@ void Knapper::ExecuteEEPROM (uint16_t entry, Display* dis, Typer* typ)
     } else if (op >= 0x20 && op <= 0x2B) {                          //1A-4R
       uint8_t* x = _mem + NextByte();
       uint8_t num1 = *x;
-      uint32_t num4 = Get32Bit(x);
       if      (op == 0x20) *_pMem += num1;  //1A
       else if (op == 0x21) *_pMem -= num1;  //1S
       else if (op == 0x22) *_pMem *= num1;  //1M
@@ -91,6 +90,7 @@ void Knapper::ExecuteEEPROM (uint16_t entry, Display* dis, Typer* typ)
       else if (op == 0x24) *_pMem %= num1;  //1L
       else if (op >= 0x25 && op <= 0x29) {
         uint32_t n = Get32Bit(_pMem);
+        uint32_t num4 = Get32Bit(x);
         if      (op == 0x25) n += num4;     //4A
         else if (op == 0x26) n -= num4;     //4S
         else if (op == 0x27) n *= num4;     //4M
@@ -114,29 +114,29 @@ void Knapper::ExecuteEEPROM (uint16_t entry, Display* dis, Typer* typ)
       }
     } else {
       switch (op) {
-        case 0x00: J(*_pMem);                                break; //J_
-        case 0x01: _o = NextWord();                          break; //JA
-        case 0x0A: ++_pMem;                                  break; //MI
-        case 0x0B: --_pMem;                                  break; //MD
-        case 0x0C: _pMem += NextByte();                      break; //MA
-        case 0x0D: _pMem -= NextByte();                      break; //MS
-        case 0x10: *_pMem = NextByte();                      break; //S_
-        case 0x11: _mem[NextByte()] = _mem[NextByte()];      break; //CP
-        case 0x12: *_pMem = _mem[NextByte()];                break; //V_
-        case 0x13: _mem[NextByte()] = *_pMem;                break; //_V
-        case 0x2C: ++*_pMem;                                 break; //1I
-        case 0x2D: --*_pMem;                                 break; //1D
-        case 0x2E: Set32Bit(Get32Bit(_pMem) + 1);            break; //4I
-        case 0x2F: Set32Bit(Get32Bit(_pMem) - 1);            break; //4D
-        case 0x30: CV(NextByte());                           break; //CV
-        case 0x40: _dis->print(*_pMem);                      break; //PC
-        case 0x41: _dis->printHexU8(*_pMem);                 break; //PX
-        case 0x42: _dis->printColumn(*_pMem);                break; //PB
-        case 0x60: _ePtr = Get16Bit(_pMem);                  break; //ES
-        case 0x61: Set16Bit(_ePtr);                          break; //EG
-        case 0x62: *_pMem = EEPROM.read(_ePtr++);            break; //ER
-        case 0x63: EEPROM.update(_ePtr++, *_pMem);           break; //EW
-        case 0xFF: noHalt = false;                           break; //HT
+        case 0x00: J(*_pMem);                           break; //J_
+        case 0x01: _o = NextWord();                     break; //JA
+        case 0x0A: ++_pMem;                             break; //MI
+        case 0x0B: --_pMem;                             break; //MD
+        case 0x0C: _pMem += NextByte();                 break; //MA
+        case 0x0D: _pMem -= NextByte();                 break; //MS
+        case 0x10: *_pMem = NextByte();                 break; //S_
+        case 0x11: _mem[NextByte()] = _mem[NextByte()]; break; //CP
+        case 0x12: *_pMem = _mem[NextByte()];           break; //V_
+        case 0x13: _mem[NextByte()] = *_pMem;           break; //_V
+        case 0x2C: ++*_pMem;                            break; //1I
+        case 0x2D: --*_pMem;                            break; //1D
+        case 0x2E: Set32Bit(Get32Bit(_pMem) + 1);       break; //4I
+        case 0x2F: Set32Bit(Get32Bit(_pMem) - 1);       break; //4D
+        case 0x30: CV(NextByte());                      break; //CV
+        case 0x40: _dis->print(*_pMem);                 break; //PC
+        case 0x41: _dis->printHexU8(*_pMem);            break; //PX
+        case 0x42: _dis->printColumn(*_pMem);           break; //PB
+        case 0x60: _ePtr = Get16Bit(_pMem);             break; //ES
+        case 0x61: Set16Bit(_ePtr);                     break; //EG
+        case 0x62: *_pMem = EEPROM.read(_ePtr++);       break; //ER
+        case 0x63: EEPROM.update(_ePtr++, *_pMem);      break; //EW
+        case 0xFF: noHalt = false;                      break; //HT
       }
     }
   }
